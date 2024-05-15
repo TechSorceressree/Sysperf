@@ -16,3 +16,21 @@ plt.ylabel("Loss")
 plt.legend()
 plt.title("Training and Validation Loss")
 plt.show()
+
+# Plot the training and validation loss
+plt.plot(history_df["accuracy"], label="Training Accuracy")
+plt.plot(history_df["val_accuracy"], label="Validation Accuracy")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.legend()
+plt.title("Training and Validation Accuracy")
+plt.show()
+
+# Plot the training and validation loss
+plt.plot(history_df["f1"], label="Training Accuracy")
+plt.plot(history_df["val_f1"], label="Validation Accuracy")
+plt.xlabel("Epoch")
+plt.ylabel("F1")
+plt.legend()
+plt.title("Training and Validation F1")
+plt.show()

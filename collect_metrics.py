@@ -10,15 +10,11 @@ if not os.path.exists(data_folder):
     os.makedirs(data_folder)
 
 # File path for the CSV file in the data folder
-csv_file = os.path.join(data_folder, "system_metrics_1.csv")
-
-# Set to keep track of processes already written
-# written_processes = set()
+csv_file = os.path.join(data_folder, "system_metrics_3.csv")
 
 
 # Function to collect system metrics
 def collect_metrics():
-    # Open CSV file for writing
     with open(csv_file, mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(
@@ -32,7 +28,7 @@ def collect_metrics():
                 "Anomaly",
             ]
         )
-        end = (datetime.now().timestamp() + 300) * (10**6)  # 5 minutes from now
+        end = (datetime.now().timestamp() + 1000) * (10**6)
 
         timestamp = datetime.now().timestamp() * (10**6)
         # Collect and write metrics to the CSV file
