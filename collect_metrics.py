@@ -55,9 +55,6 @@ def collect_metrics():
                         anomaly,
                     ]
                 )
-                # Add process to set of written processes
-                # written_processes.add(process_id)
-            # time.sleep(5)
 
 
 # Function to estimate disk usage for a process

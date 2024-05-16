@@ -34,3 +34,10 @@ plt.ylabel("F1")
 plt.legend()
 plt.title("Training and Validation F1")
 plt.show()
+
+
+
+#loss tried to converge to 0 
+# There is a steep increase in accuracy and it is consistent after some epochs I used early stopping to stop the training and get a more accurate model but the loss does not converge to 0
+
+ 

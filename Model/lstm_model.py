@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
@@ -50,7 +50,11 @@ else:
 df = df.drop(df[df["Process ID"] == 0].index)
 
 # Normalize numerical columns
-scaler = MinMaxScaler()
+# scaler = MinMaxScaler()
+# df[["CPU Usage (%)", "Memory Usage (%)", "Disk Usage (%)"]] = scaler.fit_transform(
+#     df[["CPU Usage (%)", "Memory Usage (%)", "Disk Usage (%)"]]
+# )
+scaler = StandardScaler()
 df[["CPU Usage (%)", "Memory Usage (%)", "Disk Usage (%)"]] = scaler.fit_transform(
     df[["CPU Usage (%)", "Memory Usage (%)", "Disk Usage (%)"]]
 )
@@ -62,7 +66,7 @@ for pid in unique_pids:
         ["CPU Usage (%)", "Memory Usage (%)", "Disk Usage (%)", "Anomaly", "Timestamp"]
     ]
     pid_data = pid_data.sort_values(by="Timestamp")
-    pid_data = pid_data.drop("Timestamp", axis=1)  # COmment if Timestamp is required
+    pid_data = pid_data.drop("Timestamp", axis=1)  # Comment if Timestamp is required
     X.append(pid_data.drop("Anomaly", axis=1).values)
     # y.append(pid_data['Anomaly'].values)
     anomaly = pid_data["Anomaly"].values[-1]
@@ -93,20 +97,32 @@ print(X_train.shape, y_train.shape, X_val.shape, y_val.shape)
 # Define the NN model
 model = tf.keras.Sequential(
     [
-        tf.keras.layers.LSTM(128, input_shape=(window_size, X_train.shape[2])),
+        tf.keras.layers.LSTM(2, input_shape=(window_size, X_train.shape[2])),
         # tf.keras.layers.Dense(16),
-        tf.keras.layers.Dense(32, activation="tanh"),
+        # tf.keras.layers.Dense(32, activation="tanh"),
         # tf.keras.layers.Dense(8, activation='relu'),
-        tf.keras.layers.Dense(y_train.shape[1], activation="sigmoid"),
+        tf.keras.layers.Dense(
+            y_train.shape[1], activation="sigmoid"
+        ),  # data is binary classification So I want it to be either 0 or 1
     ]
 )
 
 # Compile the model
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy", f1])
+model.compile(
+    optimizer="adam", loss="binary_crossentropy", metrics=["accuracy", f1]
+)  # best loss for binary classification
 
-# Train the model# Train the model and capture the training history
+model.summary() 
+
+# Train the model and capture the training history
+# callback = tf.keras.callbacks.EarlyStopping(monitor="val_accuracy", patience=5)
 history = model.fit(
-    X_train, y_train, validation_data=(X_val, y_val), epochs=100, batch_size=32
+    X_train,
+    y_train,
+    validation_data=(X_val, y_val),
+    epochs=100,
+    batch_size=32,
+    # callbacks=[callback],
 )
 
 # Save the training history to a CSV file
